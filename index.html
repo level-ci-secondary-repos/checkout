@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout micro-frontend</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 2rem;
+      }
+
+      section {
+        border: 1px solid #b7c1d6;
+        border-radius: 0.75rem;
+        max-width: 32rem;
+        padding: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="checkout-root"></main>
+    <script type="module">
+      import { renderCheckout } from './src/checkout.js'
+
+      renderCheckout(document.querySelector('#checkout-root'))
+    </script>
+  </body>
+</html>

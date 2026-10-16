@@ -1,0 +1,41 @@
+name: Level CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: level-ci-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  trigger-desktop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask desktop to run a secondary scan
+        env:
+          GH_TOKEN: ${{ secrets.TEST_REPOS_TOKEN }}
+          SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
+          SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+          SOURCE_PULL_REQUEST: ${{ github.event.pull_request.number || '' }}
+          SECONDARY_REPOSITORY_KEY: ${{ vars.LEVEL_CI_SECONDARY_REPOSITORY_KEY }}
+        run: |
+          jq -n \
+            --arg source_repository "$GITHUB_REPOSITORY" \
+            --arg branch "$SOURCE_BRANCH" \
+            --arg commit_hash "$SOURCE_COMMIT" \
+            --arg pull_request "$SOURCE_PULL_REQUEST" \
+            --arg secondary_repository_key "$SECONDARY_REPOSITORY_KEY" \
+            '{
+              event_type: "level-ci-scan-request",
+              client_payload: {
+                source_repository: $source_repository,
+                branch: $branch,
+                commit_hash: $commit_hash,
+                pull_request: $pull_request,
+                secondary_repository_key: $secondary_repository_key
+              }
+            }' |
+            gh api --method POST repos/level-ci-secondary-repos/desktop/dispatches --input -

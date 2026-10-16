@@ -1,4 +1,4 @@
-# CA-7126 checkout
+# Checkout
 
 Minimal secondary micro-frontend used to test Level CI secondary-repository
 scans.

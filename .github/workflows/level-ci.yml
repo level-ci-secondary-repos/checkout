@@ -16,11 +16,11 @@ jobs:
     steps:
       - name: Ask desktop to run a secondary scan
         env:
-          GH_TOKEN: ${{ secrets.TEST_REPOS_TOKEN }}
+          GH_TOKEN: ${{ secrets.DESKTOP_DISPATCH_TOKEN }}
           SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
           SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
           SOURCE_PULL_REQUEST: ${{ github.event.pull_request.number || '' }}
-          SECONDARY_REPOSITORY_KEY: ${{ vars.LEVEL_CI_SECONDARY_REPOSITORY_KEY }}
+          SECONDARY_REPOSITORY_KEY: ${{ secrets.LEVEL_CI_SECONDARY_REPOSITORY_KEY }}
         run: |
           jq -n \
             --arg source_repository "$GITHUB_REPOSITORY" \
@@ -38,4 +38,4 @@ jobs:
                 secondary_repository_key: $secondary_repository_key
               }
             }' |
-            gh api --method POST repos/level-ci-secondary-repos/desktop/dispatches --input -
+            gh api --method POST repos/level-ci-secondary-repos/desktop/dispatches --input -\
